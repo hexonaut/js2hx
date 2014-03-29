@@ -1,4 +1,4 @@
-Converts JSDoc annotated JavaScript files to Haxe externs.
+Converts JSDoc annotated JavaScript files to Haxe externs. This is not a general purpose converter. It was built to convert the Phaser library specifically, but it may be general enough to convert other libraries as well. Really the only requirement is that every JS file corresponds to a class and the folder structure maps directly to package structure. Built for Object Oriented structuring.
 
 Requires DOX: https://github.com/visionmedia/dox
 
