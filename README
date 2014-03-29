@@ -1,0 +1,11 @@
+Converts JSDoc annotated JavaScript files to Haxe externs.
+
+Requires DOX: https://github.com/visionmedia/dox
+
+Compile and run:
+
+	neko js2hx INDIR OUTDIR
+
+Example:
+
+	neko js2hx path/to/phaser path/to/out
