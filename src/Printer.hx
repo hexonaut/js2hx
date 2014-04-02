@@ -23,6 +23,7 @@ class Printer {
 	
 	public function write (cls:DClass):Void {
 		w('package ${cls.pkg};');
+		w('');
 		w('@:native("${cls.native}")');
 		var clsDef = 'extern class ${cls.name}';
 		if (cls.ext != null) clsDef += ' extends ${cls.ext}';

@@ -119,7 +119,7 @@ class Main {
 	}
 	
 	function resolveType (t:String):String {
-		if (t == "Void") return t;
+		if (t == "Void" || t == "Float" || t == "Int" || t == "String" || t == "Dynamic" || t == "Bool" || t == "Array<Dynamic>") return t;
 		
 		var cls = nativeTypes.get(t);
 		if (cls != null) {

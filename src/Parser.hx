@@ -85,7 +85,7 @@ class Parser {
 		var name = null;
 		var fun = false;
 		var params = new Array();
-		var ret = "Dynamic";	//Should be Void, but missing return statements are too common
+		var ret = "Void";
 		var type = "Dynamic";
 		var argIndex = 0;
 		var stat = false;
@@ -101,9 +101,13 @@ class Parser {
 					var param:Dynamic = parseName(i.name, 'a${argIndex++}');
 					param.type = getHaxeType(i.types[0]);
 					params.push(param);
-				case "returns":
-					var str:String = i.string;
-					ret = getHaxeType(str.substr(str.indexOf("{") + 1, str.indexOf("}") - str.indexOf("{") - 1));
+				case "returns", "return":
+					if (i.types != null) {
+						ret = getHaxeType(i.types[0]);
+					} else {
+						var str:String = i.string;
+						ret = getHaxeType(str.substr(str.indexOf("{") + 1, str.indexOf("}") - str.indexOf("{") - 1));
+					}
 				case "method":
 					var str:String = i.string;
 					var hashIndex = str.lastIndexOf("#");
