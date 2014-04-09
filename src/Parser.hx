@@ -99,11 +99,16 @@ class Parser {
 					fun = true;
 				case "param":
 					var param:Dynamic = parseName(i.name, 'a${argIndex++}');
-					param.type = getHaxeType(i.types[0]);
+					var types = new Array<String>();
+					for (o in cast(i.types, Array<Dynamic>)) {
+						types.push(getHaxeType(o));
+					}
+					param.type = types;
 					params.push(param);
 				case "returns", "return":
 					if (i.types != null) {
-						ret = getHaxeType(i.types[0]);
+						if (i.types.length == 1) ret = getHaxeType(i.types[0]);
+						else ret = "Dynamic";
 					} else {
 						var str:String = i.string;
 						ret = getHaxeType(str.substr(str.indexOf("{") + 1, str.indexOf("}") - str.indexOf("{") - 1));
@@ -130,7 +135,8 @@ class Parser {
 				case "readonly":
 					set = "null";
 				case "type":
-					type = getHaxeType(i.types[0]);
+					if (i.types.length == 1) type = getHaxeType(i.types[0]);
+					else type = "Dynamic";
 				default:
 			}
 		}

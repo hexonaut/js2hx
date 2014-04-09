@@ -75,7 +75,9 @@ class Main {
 				switch (o.kind) {
 					case FFun(params, ret):
 						for (p in params) {
-							p.type = resolveType(p.type);
+							for (t in 0 ... p.type.length) {
+								p.type[t] = resolveType(p.type[t]);
+							}
 						}
 						o.kind = FFun(params, resolveType(ret));
 					case FVar(t, g, s):

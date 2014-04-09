@@ -21,7 +21,7 @@ typedef DField = {
 }
 
 enum DFieldKind {
-	FFun(params:Array<{ opt:Bool, name:String, type:String, ?value:String }>, ret:String);
+	FFun(params:Array<{ opt:Bool, name:String, type:Array<String>, ?value:String }>, ret:String);
 	FVar(type:String, ?get:String, ?set:String);
 }
 
