@@ -4,6 +4,8 @@ import AST;
 import sys.io.File;
 import sys.io.FileOutput;
 
+using StringTools;
+
 /**
  * Print Haxe file from AST.
  * 
@@ -55,6 +57,13 @@ class Printer {
 		if (cls.ext != null) clsDef += ' extends ${cls.ext}';
 		w('$clsDef {');
 		for (i in cls.fields) {
+			w('', 1);
+			if (i.doc != null) {
+				var doc = i.doc.replace("\n", "\n\t * ");
+				w('/**', 1);
+				w(' * $doc', 1);
+				w(' */', 1);
+			}
 			switch (i.kind) {
 				case FFun(params, ret):
 					funcs = new Array<Array<String>>();
@@ -96,6 +105,7 @@ class Printer {
 					w(str, 1);
 			}
 		}
+		w('', 1);
 		w('}');
 		
 		output.close();

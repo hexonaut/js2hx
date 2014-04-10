@@ -17,7 +17,8 @@ typedef DClass = {
 typedef DField = {
 	name:String,
 	stat:Bool,
-	kind:DFieldKind
+	kind:DFieldKind,
+	doc:Null<String>
 }
 
 enum DFieldKind {

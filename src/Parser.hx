@@ -92,6 +92,7 @@ class Parser {
 		var cls = false;
 		var get = null;
 		var set = null;
+		var doc = null;
 		for (i in cast(field.tags, Array<Dynamic>)) {
 			switch (i.type) {
 				case "constructor":
@@ -156,8 +157,10 @@ class Parser {
 			}
 		}
 		
-		if (field.description != null && name == null) {
-			if (cast(field.description.full, String).indexOf("@const") != -1) {
+		if (field.description != null) {
+			doc = parseDocs(field.description.full);
+			
+			if (name == null && cast(field.description.full, String).indexOf("@const") != -1) {
 				var code = cast(field.code, String).split("=");
 				var n = code[0].trim();
 				name = n.substr(n.lastIndexOf(".") + 1);
@@ -167,9 +170,9 @@ class Parser {
 		
 		if (name != null && !isReserved(name)) {
 			if (fun) {
-				return { name:name, stat:stat, kind:FFun(params, ret) };
+				return { name:name, stat:stat, kind:FFun(params, ret), doc:doc };
 			} else {
-				return { name:name, stat:stat, kind:FVar(type, get, set) };
+				return { name:name, stat:stat, kind:FVar(type, get, set), doc:doc };
 			}
 		} else {
 			return null;
@@ -177,13 +180,13 @@ class Parser {
 	}
 	
 	function getHaxeType (type:String):String {
-		return switch (type) {
+		return switch (type.toLowerCase()) {
 			case "number": "Float";
 			case "integer": "Int";
 			case "string": "String";
 			case "object": "Dynamic";
 			case "boolean": "Bool";
-			case "Array": "Array<Dynamic>";
+			case "array": "Array<Dynamic>";
 			default: type;
 		}
 	}
@@ -218,6 +221,25 @@ class Parser {
 		if (isReserved(n)) n = alt;
 		
 		return { name:n, opt:opt, value:value };
+	}
+	
+	function parseDocs (str:String):String {
+		str = 	str.replace("<p>", "")
+				.replace("<code>", "")
+				.replace("</code>", "")
+				.replace("<br />", "\n")
+				.replace("</p>", "\n\n")
+				.replace("\n\n\n\n", "\n\n");
+		if (str.endsWith("\n\n")) str = str.substr(0, str.length - 2);
+		
+		var propIndex = str.indexOf("@property");
+		var dashIndex = str.indexOf("-");
+		
+		if (propIndex != -1 && dashIndex != -1) {
+			return str.substr(0, propIndex) + str.substr(dashIndex + 2);
+		} else {
+			return str;
+		}
 	}
 	
 	function jsToJson (file:String):Dynamic {
