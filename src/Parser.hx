@@ -200,20 +200,24 @@ class Parser {
 		var opt = false;
 		var value = null;
 		
-		if (regex1.match(name)) {
-			n = regex1.matched(1);
-			opt = true;
-			value = regex1.matched(2);
-			
-			//Only store contants
-			if ((value.charCodeAt(0) < '0'.code || value.charCodeAt(0) > '9'.code) && value.charAt(0) != "'" && value.charAt(0) != '"' && value != "true" && value != "false") {
-				value = null;
+		if (name != null) {
+			if (regex1.match(name)) {
+				n = regex1.matched(1);
+				opt = true;
+				value = regex1.matched(2);
+				
+				//Only store contants
+				if ((value.charCodeAt(0) < '0'.code || value.charCodeAt(0) > '9'.code) && value.charAt(0) != "'" && value.charAt(0) != '"' && value != "true" && value != "false") {
+					value = null;
+				}
+			} else if (regex2.match(name)) {
+				n = regex2.matched(1);
+				opt = true;
+			} else if (regex3.match(name)) {
+				n = regex3.matched(1);
+			} else {
+				n = alt;
 			}
-		} else if (regex2.match(name)) {
-			n = regex2.matched(1);
-			opt = true;
-		} else if (regex3.match(name)) {
-			n = regex3.matched(1);
 		} else {
 			n = alt;
 		}
