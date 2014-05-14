@@ -93,19 +93,22 @@ class Parser {
 		var get = null;
 		var set = null;
 		var doc = null;
+		var forceOpt = false;
 		for (i in cast(field.tags, Array<Dynamic>)) {
 			switch (i.type) {
 				case "constructor":
 					name = "new";
 					fun = true;
 				case "param":
-					var param:Dynamic = parseName(i.name, 'a${argIndex++}');
+					var param:Dynamic = parseName(i.name, 'a${argIndex++}', forceOpt);
 					var types = new Array<String>();
 					for (o in cast(i.types, Array<Dynamic>)) {
 						types.push(getHaxeType(o));
 					}
 					param.type = types;
 					params.push(param);
+					
+					if (param.opt) forceOpt = true;
 				case "returns", "return":
 					if (i.types != null) {
 						if (i.types.length == 1) ret = getHaxeType(i.types[0]);
@@ -191,7 +194,7 @@ class Parser {
 		}
 	}
 	
-	function parseName (name:String, alt:String): { name:String, opt:Bool, ?value:String } {
+	function parseName (name:String, alt:String, ?forceOpt:Bool = false): { name:String, opt:Bool, ?value:String } {
 		var regex1 = ~/\[([A-Za-z][A-Za-z0-9]*)=([^\]]+)\]/;
 		var regex2 = ~/\[([A-Za-z][A-Za-z0-9]*)\]/;
 		var regex3 = ~/([A-Za-z][A-Za-z0-9]*)/;
@@ -223,6 +226,8 @@ class Parser {
 		}
 		
 		if (isReserved(n)) n = alt;
+		
+		if (forceOpt) opt = true;
 		
 		return { name:n, opt:opt, value:value };
 	}
