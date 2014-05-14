@@ -24,7 +24,7 @@ class Printer {
 		output.writeString(StringTools.lpad("", "\t", t) + ln + "\n");
 	}
 	
-	function expandFunc (params:Array<{ opt:Bool, name:String, type:Array<String>, ?value:String }>, ?currParam:Int = 0):Void {
+	function expandFunc (params:Array<{ opt:Bool, name:String, type:Array<String>, ?value:String, ?varArg:Bool }>, ?currParam:Int = 0):Void {
 		if (currParam == 0) funcs.push(new Array<String>());
 		
 		if (currParam == params.length) return;
@@ -79,10 +79,18 @@ class Printer {
 						var first = true;
 						for (o in 0 ... funcs[f].length) {
 							var p = params[o];
-							if (!first) str += ', ';
-							if (p.opt) str += '?';
-							str += '${p.name}:${funcs[f][o]}';
-							if (p.value != null) str += ' = ${p.value}';
+							if (p.varArg == true && o == funcs[f].length - 1) {
+								for (va in 0 ... 5) {
+									if (!first) str += ', ';
+									str += '?${p.name}${va}:${funcs[f][o]}';
+									first = false;
+								}
+							} else {
+								if (!first) str += ', ';
+								if (p.opt) str += '?';
+								str += '${p.name}:${funcs[f][o]}';
+								if (p.value != null) str += ' = ${p.value}';
+							}
 							first = false;
 						}
 						if (i.name != "new" || !lastIndex) str += '):${ret}';

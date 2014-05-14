@@ -103,7 +103,12 @@ class Parser {
 					var param:Dynamic = parseName(i.name, 'a${argIndex++}', forceOpt);
 					var types = new Array<String>();
 					for (o in cast(i.types, Array<Dynamic>)) {
-						types.push(getHaxeType(o));
+						var type = cast(o, String);
+						if (type.indexOf("...") == 0) {
+							param.varArg = true;
+							type = type.substr(3);
+						}
+						types.push(getHaxeType(type));
 					}
 					param.type = types;
 					params.push(param);
@@ -190,6 +195,7 @@ class Parser {
 			case "object": "Dynamic";
 			case "boolean": "Bool";
 			case "array": "Array<Dynamic>";
+			case "*": "Dynamic";
 			default: type;
 		}
 	}
