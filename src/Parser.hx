@@ -258,7 +258,7 @@ class Parser {
 	}
 	
 	function jsToJson (file:String):Dynamic {
-		Sys.command("dox.cmd", ["<", file + ".js", ">", file + ".json"]);
+		Sys.command("dox", ["<", file + ".js", ">", file + ".json"]);
 		var json = Json.parse(File.getContent(file + ".json"));
 		FileSystem.deleteFile(file + ".json");
 		return json;
